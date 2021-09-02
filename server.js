@@ -25,6 +25,7 @@ const books = [
   { id: 6, name: "A Gentleman in Moscow", authorId: 3 },
 ];
 
+//the new objectype 'descripes' how a book is represented, in this case a book would have an id, name, and author id. All specified to a string or num, etc
 const BookType = new GraphQLObjectType({
   name: "book",
   description: "This represents a book written by an author",
@@ -32,10 +33,16 @@ const BookType = new GraphQLObjectType({
     id: { type: GraphQLInt },
     name: { type: GraphQLString },
     authorId: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve: (book) => {
+        return authors.find((author) => author.id === book.authorId);
+      },
+    },
   }),
 });
 
-const AuthorType = newGraphQLObjectType({
+const AuthorType = new GraphQLObjectType({
   name: "author",
   description: "this represents all the authors",
   fields: () => ({
@@ -44,6 +51,7 @@ const AuthorType = newGraphQLObjectType({
   }),
 });
 
+//the root query will be placed in the schema, and represents the different type of fields and their content, in this case books and authors
 const RootQueryType = new GraphQLObjectType({
   name: "Query",
   description: "Root Query",
