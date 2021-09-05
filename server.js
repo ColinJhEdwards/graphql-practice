@@ -58,6 +58,8 @@ const AuthorType = new GraphQLObjectType({
 });
 
 //the root query will be placed in the schema, and represents the different type of fields and their content, in this case books and authors
+//you must create a new object type and declare a name and description followed by the fields
+// alot of graphQL is typing our your objects
 const RootQueryType = new GraphQLObjectType({
   name: "Query",
   description: "Root Query",
@@ -90,8 +92,33 @@ const RootQueryType = new GraphQLObjectType({
   }),
 });
 
+const RootMutationType = new GraphQLObjectType({
+  name: "Mutation",
+  description: "Root Mutation",
+  fields: () => ({
+    addBook: {
+      type: BookType,
+      description: "add a book",
+      args: {
+        name: { type: GraphQLString },
+        authorId: { type: GraphQLInt },
+      },
+      resolve: (parents, args) => {
+        const book = {
+          id: books.length + 1,
+          name: args.name,
+          authorId: args.authorid,
+        };
+        books.push(book);
+        return book;
+      },
+    },
+  }),
+});
+
 const schema = new GraphQLSchema({
   query: RootQueryType,
+  mutation: RootMutationType,
 });
 
 //setting up graphql
